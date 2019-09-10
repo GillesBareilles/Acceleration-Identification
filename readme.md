@@ -19,8 +19,8 @@ include("plot_1_lasso2d.jl")
 include("plot_2_distball1.3.jl")
 include("plot_3_distball2.6.jl")
 include("script_expenums_l12.jl")
-include("script_expenums_l1.j")
-include("script_expenums_lnuclear.j")
+include("script_expenums_l1.jl")
+include("script_expenums_lnuclear.jl")
 ```
 
 By default, figures will be saved in the folder `./figs`.

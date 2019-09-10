@@ -58,7 +58,7 @@ function main()
     ))
         
     push!(algorithms, (
-        name="CI",
+        name="T1",
         updatefunc=extra_CondInertia,
         params=Dict(
             :id_testkind=>:default,
@@ -68,7 +68,7 @@ function main()
     ))
     
     push!(algorithms, (
-        name="CIpred",
+        name="T2",
         updatefunc=extra_CondPredInertia,
         params=Dict(
             :printstep => 1,

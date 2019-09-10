@@ -245,19 +245,19 @@ function get_alg_color(algoname)
     elseif algoname == "FISTA"
         # res = "blue"
         res = distinguishable_colors(9, transform=deuteranopic)[2+2]
-    elseif algoname == "CI"
+    elseif algoname == "T1"
         # res = "yellow"
         res = distinguishable_colors(9, transform=deuteranopic)[6]
-    elseif algoname == "CIpred"
+    elseif algoname == "T2"
         res = "black"
         # res = distinguishable_colors(9, transform=deuteranopic)[9]
     elseif algoname == "ISTA - bt"
         res = distinguishable_colors(9, transform=deuteranopic)[1]
     elseif algoname == "FISTA - bt"
         res = distinguishable_colors(9, transform=deuteranopic)[5]
-    elseif algoname == "CI - bt"
+    elseif algoname == "T1 - bt"
         res = distinguishable_colors(9, transform=deuteranopic)[7]
-    elseif algoname == "CIpred - bt"
+    elseif algoname == "T2 - bt"
         res = distinguishable_colors(9, transform=deuteranopic)[8]
     end
 
@@ -291,9 +291,9 @@ function get_legend(algoname)
         res = "Proximal Gradient"
     elseif algoname == "FISTA"
         res = "Accel. Proximal Gradient"
-    elseif algoname == "CI"
+    elseif algoname == "T1"
         res = "Prov. Alg -- \$\\mathsf{T}^1\$"
-    elseif algoname == "CIpred"
+    elseif algoname == "T2"
         res = "Prov. Alg -- \$\\mathsf{T}^2\$"
     end
 

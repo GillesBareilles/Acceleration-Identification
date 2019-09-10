@@ -72,7 +72,7 @@ function get_algorithms()
     ))
         
     push!(algorithms, (
-        name="CI",
+        name="T1",
         updatefunc=extra_CondInertia,
         params=Dict(
             :id_testkind=>:default,
@@ -84,7 +84,7 @@ function get_algorithms()
     ))
     
     push!(algorithms, (
-        name="CIpred",
+        name="T2",
         updatefunc=extra_CondPredInertia,
         params=Dict(
             # :αuser => αuser,
@@ -219,8 +219,8 @@ function main()
                 ),
             )
 
-            pgfsave("./$(pbclass_name)_$(algo.name).pdf", fig)
-            pgfsave("./$(pbclass_name)_$(algo.name).tikz", fig)
+            pgfsave(joinpath(FIGS_FOLDER, "$(pbclass_name)_$(algo.name).pdf"), fig)
+            pgfsave(joinpath(FIGS_FOLDER, "$(pbclass_name)_$(algo.name).tikz"), fig)
         end
     end
     

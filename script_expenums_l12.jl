@@ -64,7 +64,7 @@ function get_algorithms()
     ))
         
     push!(algorithms, (
-        name="CI",
+        name="T1",
         updatefunc=extra_CondInertia,
         params=Dict(
             :id_testkind=>:default,
@@ -76,7 +76,7 @@ function get_algorithms()
     ))
     
     push!(algorithms, (
-        name="CIpred",
+        name="T2",
         updatefunc=extra_CondPredInertia,
         params=Dict(
             # :αuser => αuser,

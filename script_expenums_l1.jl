@@ -66,7 +66,7 @@ function get_algorithms()
     ))
         
     push!(algorithms, (
-        name="CI",
+        name="T1",
         updatefunc=extra_CondInertia,
         params=Dict(
             :saveiter => false,
@@ -79,7 +79,7 @@ function get_algorithms()
     ))
     
     push!(algorithms, (
-        name="CIpred",
+        name="T2",
         updatefunc=extra_CondPredInertia,
         params=Dict(
             :saveiter => false,
