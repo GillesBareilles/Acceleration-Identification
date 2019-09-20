@@ -1,6 +1,8 @@
 On the interplay between Acceleration and Identification
 ===
 
+This repository contains all code related to the paper *On the interplay between Acceleration and Identification*, which arXiv preprint is available [here](https://arxiv.org/abs/1909.08944).
+
 Numerical experiments and figures can be produced by running top-level scripts, in Julia v1.1 or higher.
 
 ## Activating the environment
