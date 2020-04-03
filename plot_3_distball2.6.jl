@@ -77,6 +77,14 @@ function main()
         ),
     ))
 
+    push!(algorithms, (
+        name="MFISTA",
+        updatefunc=extra_MFISTA,
+        params=Dict(
+            :αuser => αuser,
+            :printstep => 1,
+        ),
+    ))
 
     ## Start from interesting point and optimize with ISTA, FISTA.
     problem_to_algstats = OrderedDict()
@@ -131,7 +139,7 @@ function main()
             for (algo, stats) in algo_to_stats
                 coords = [ (point[1], point[2]) for (iter, point) in stats.hist[:iter_x]  if xmin < point[1] < xmax && ymin < point[2] < ymax]
 
-                add_traj!(ps, coords, algo.name, params=get_traj_params(algo.name))
+                add_traj!(ps, coords, algo.name, params=get_iterates_algoparams(algo.name))
             end
 
             ## Plot optimal point

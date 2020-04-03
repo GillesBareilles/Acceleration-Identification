@@ -105,6 +105,7 @@ function extra_MFISTA(pb::AbstractProblem, y, y_old, it, mem)
     end
     z_old = copy(mem[:z_old])
 
+    z = zeros(size(y))
     if argmin([F(pb, y), F(pb, z_old)]) == 1
         z = y
     else
