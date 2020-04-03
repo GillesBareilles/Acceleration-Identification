@@ -6,19 +6,19 @@
 
     Run the proximal gradient algorithm solving `pb`, starting from `x0`, using extrapolation function `extrapolation` and return
     optimal poit `x` and indicators history `history`.
-    
+
     kwargs holds arguments that will be passed to `extrapolation`.
 """
-function solve_proxgrad(pb::AbstractProblem{T}, 
-                        x0, 
-                        extrapolation::Function; 
-                        tol = 1e-9, 
-                        itmax = 5000, 
-                        x1 = nothing, 
+function solve_proxgrad(pb::AbstractProblem{T},
+                        x0,
+                        extrapolation::Function;
+                        tol = 1e-9,
+                        itmax = 5000,
+                        x1 = nothing,
                         printstep = nothing,
-                        logstep = 1, 
-                        linesearch = false, 
-                        αuser = nothing, 
+                        logstep = 1,
+                        linesearch = false,
+                        αuser = nothing,
                         saveiter = true,
                         proxgrad_per_it = 1,
                         kwargs...) where {T}
@@ -32,7 +32,7 @@ function solve_proxgrad(pb::AbstractProblem{T},
     @assert length(x0) == n
     x = copy(x0)
     x_old = zeros(n).+1e9
-    
+
     y = copy(x)
     y_old = copy(y)
     memory = Dict{Symbol, Any}(
@@ -49,7 +49,7 @@ function solve_proxgrad(pb::AbstractProblem{T},
 
     ## Secondary stuff: history and kpis
     isnothing(printstep) && (printstep = floor(itmax / 30))
-    
+
     history = Dict{Symbol, Any}()
     history[:iter_f] = SortedDict{Int, Float64}(0 => F(pb, x))
     history[:iter_x] = SortedDict{Int, Any}(0 => x)
@@ -107,7 +107,7 @@ function solve_proxgrad(pb::AbstractProblem{T},
         memory[:α] = α
 
         x = extrapolation(pb, y, y_old, it, memory)
-        
+
         cur_supp_x = get_support(T, x)
         cur_supp_y = get_support(T, y)
 
@@ -134,10 +134,10 @@ function solve_proxgrad(pb::AbstractProblem{T},
         cur_support = get_support(T, x)
         newelems = setdiff(cur_support, old_support)
         # !isempty(newelems) && printstyled("$it \tSupport length: $(length(cur_support))\t\tNew elements    : $(collect(newelems))\n", color=:green)
-        
+
         delelems = setdiff(old_support, cur_support)
         # !isempty(delelems) && printstyled("$it \tSupport length: $(length(cur_support))\t\tRemoved elements: $(collect(delelems))\n", color=:red)
-        
+
         history[:num_id] += length(newelems)
         history[:num_desid] += length(delelems)
 
@@ -191,7 +191,7 @@ function fwbw_backtracking(pb, x, gradf, L)
 
         u = x - (1/Lk) * gradf
         y_ls = prox_αg(pb, u, 1/Lk)
-        
+
         # @show -f(pb, y_ls) + f(pb, x) + dot(gradf, y_ls-x) + Lk/2 * norm(y_ls - x)^2, Lk
 
         k += 1

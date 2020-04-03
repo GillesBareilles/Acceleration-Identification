@@ -2,9 +2,9 @@ using PGFPlotsX, LaTeXStrings
 
 function make_binbounds(maxkey, nbins)
     binbounds = []
-    
+
     binsize = floor((maxkey-2)/(nbins-2))
-    
+
     for i in 0:nbins-3
         lowbin = binsize*(i)+2
         upbin = binsize*(i+1)+1
@@ -20,20 +20,20 @@ end
 
 function make_bins(data, maxkey; nbins=20)
     binbounds = make_binbounds(maxkey, nbins)
-    
+
     t = [
         ("1", get(data, 1, 0))
     ]
-    
+
     for (lowbin, upbin) in binbounds
         count = 0
         for jumpval in lowbin:upbin
             count += get(data, jumpval, 0)
         end
-        
+
         push!(t, ("$(Int(lowbin))-$(Int(upbin))", count))
     end
-    
+
     return t
 end
 
@@ -42,7 +42,7 @@ function add_identif_point!(ps, pb, stats, inds, vals; color="black")
 
     k1, k2 = collect(keys(stats.hist[:iter_support_x]))
     logstep = k2-k1
-    
+
     reg = typeof(pb.pb).parameters[1]
     opt_support = get_support(reg, pb.pb.x0)
     indices_identif = SortedSet(keys(filter(kv->collect(kv.second) == collect(opt_support), stats.hist[:iter_support_x])))
@@ -85,16 +85,16 @@ function build_save_suboptimality(pb, algo_to_stats, FIGS_FOLDER)
 
         push!(ps, PlotInc(
             PGFPlotsX.Options(
-                "mark" => "none", 
+                "mark" => "none",
                 "color" => get_alg_color(algo.name),
             ),
             Coordinates(coords)
         ))
         push!(ps, LegendEntry(get_legend(algo.name)))
 
-        ## Add identification point    
+        ## Add identification point
         add_identif_point!(ps, pb, stats, inds, vals, color=get_alg_color(algo.name))
-        
+
         algo_id+=1
     end
 
@@ -127,14 +127,14 @@ function build_save_steplength(pb, algo_to_stats, FIGS_FOLDER)
 
         push!(ps, PlotInc(
             PGFPlotsX.Options(
-                "mark" => "none", 
+                "mark" => "none",
                 "color" => get_alg_color(algo.name),
             ),
             Coordinates(coords))
         )
         push!(ps, LegendEntry(algo.name))
 
-        ## Add identification point    
+        ## Add identification point
         add_identif_point!(ps, pb, stats, inds, vals, color=get_alg_color(algo.name))
 
         algo_id += 1

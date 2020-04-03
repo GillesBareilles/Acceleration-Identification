@@ -67,15 +67,15 @@ f(pb::LassoPb, x) = 0.5 * norm(pb.A*x-pb.y)^2
 function get_optimsol(pb::LassoPb{T}) where {T <: AbstractRegularizer}
     model = Model(with_optimizer(Ipopt.Optimizer, tol=1e-13, print_level=0))
     n = pb.n
-    
+
     t = @variable model t
     x = @variable model x[1:n]
 
     p = build_reg!(model, T, x, n)
-    
+
     @objective model Min 0.5 * transpose(pb.A*x-pb.y) * (pb.A*x-pb.y) + pb.λ * t
     @constraint model t >= sum(p)
-    
+
     optimize!(model)
 
     objopt = objective_value(model)
@@ -103,14 +103,14 @@ end
 
 function f(pb::LogisticPb, x)
     m = size(pb.A, 1)
-    
+
     return (1/m) * sum(log(1 + exp(-pb.y[i] * dot(pb.A[i, :], x))) for i in 1:m)
 end
 
 σ(x) = 1/(1+exp(-x))
 function ∇f(pb::LogisticPb, x)
     m = size(pb.A, 1)
-   
+
     vec = zeros(m)
     for i in 1:m
         vec[i] = (1/m) * σ(-pb.y[i] * dot(pb.A[i, :], x)) * (-pb.y[i])
@@ -129,16 +129,16 @@ function get_optimsol(pb::LogisticPb)
     model = Model(with_optimizer(Ipopt.Optimizer, tol=1e-13, print_level=0))
     n = pb.n
     m = size(pb.A, 1)
-    
+
     t = @variable model t
     p = @variable model p[1:n] >= 0
     x = @variable model x[1:n]
-    
+
     ## Linear part of objective...
     lins = @variable model lins[1:m]
-    
+
     @NLobjective model Min (1/m) * sum(log(1 + exp(-pb.y[i] * lins[i])) for i in 1:m) + pb.λ * t
-    
+
     my_expr = pb.A * x
     @constraint(model, [i=1:m], lins[i] == dot(pb.A[i, :], x))
 

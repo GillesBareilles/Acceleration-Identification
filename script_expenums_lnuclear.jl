@@ -5,7 +5,7 @@ function get_problems()
     problems = Dict()
 
     nseeds = 1
-    
+
     ## Lasso nuclear norm
     lnuclear_pbs = []
 
@@ -31,13 +31,13 @@ function get_problems()
     end
 
     problems["lnuclear_randinit"] = lnuclear_pbs
- 
+
     ## Lasso nuclear norm - zero init
     lnuclear_zeroinit_pbs = []
     for pb in lnuclear_pbs
         push!(lnuclear_zeroinit_pbs, (name = "pblasso_lnuclear", pb = pb.pb, xstart = zeros(n), objopt = pb.objopt))
     end
-    
+
     problems["lnuclear_zeroinit"] = lnuclear_zeroinit_pbs
 
     return problems
@@ -45,7 +45,7 @@ end
 
 function get_algorithms()
     algorithms = []
-    
+
     # αuser = 0.001
     itmax = 3e4
     printstep = 1e3
@@ -70,7 +70,7 @@ function get_algorithms()
             :saveiter => false,
         ),
     ))
-        
+
     push!(algorithms, (
         name="T1",
         updatefunc=extra_CondInertia,
@@ -82,7 +82,7 @@ function get_algorithms()
             :saveiter => false,
         ),
     ))
-    
+
     push!(algorithms, (
         name="T2",
         updatefunc=extra_CondPredInertia,
@@ -113,11 +113,11 @@ function main()
         algo_to_stats = OrderedDict()
         for (algo_id, algo) in enumerate(algorithms)
             printstyled("\n---- Algorithm $(algo.name)\n", color=:light_blue)
-            
+
             algo_to_stats[algo] = Dict()
             for (pb_id, pb_data) in enumerate(problem_class)
                 printstyled("\n----- Solving problem $pb_id, $(pb_data.name)\n", color=:light_blue)
-                
+
                 xopt, hist = solve_proxgrad(pb_data.pb, pb_data.xstart, algo.updatefunc; algo.params...)
                 algo_to_stats[algo][pb_data] = (hist=hist, xopt=xopt)
             end
@@ -138,7 +138,7 @@ function main()
 
     for (pbclass_name, algo_to_stats) in problemclass_to_algstats
         println("Generating graphs for class ", pbclass_name)
-        
+
         colors_vec = distinguishable_colors(8) # transform=deuteranopic
 
         # algo_id = 1
@@ -149,7 +149,7 @@ function main()
             ############################################
             ## N identified manifolds - 1st problem
             (pb, pbinstance_stats) = first(stats); delete!(stats, pb)
-            
+
             reg = typeof(pb.pb).parameters[1]
             opt_supp = get_support(reg, pb.pb.x0)
 
@@ -173,10 +173,10 @@ function main()
             inds = collect(keys(pbinstance_stats.hist[:iter_f]))
             vals = collect(abs.(values(pbinstance_stats.hist[:iter_f]) .- minval))
             coords = [ (inds[i], vals[i]) for i in 1:length(vals) if mod(i, 10) == 0]
-        
+
             push!(ps_subopt, PlotInc(
                 PGFPlotsX.Options(
-                    "mark" => "none", 
+                    "mark" => "none",
                     "color" => "black",
                 ),
                 Coordinates(coords)
@@ -184,7 +184,7 @@ function main()
             add_identif_point!(ps_subopt, pb, pbinstance_stats, inds, vals, color=get_alg_color(algo.name))
 
             push!(ps_nidentif, LegendEntry(get_legend(algo.name)))
-            
+
             fig = @pgf TikzPicture(
                 Axis(
                     {
@@ -223,7 +223,7 @@ function main()
             pgfsave(joinpath(FIGS_FOLDER, "$(pbclass_name)_$(algo.name).tikz"), fig)
         end
     end
-    
+
 
     return
 end

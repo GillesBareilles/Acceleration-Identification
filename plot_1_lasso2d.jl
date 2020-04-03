@@ -28,7 +28,7 @@ function main()
 
     ## Build algorithms
     algorithms = []
-    
+
     αuser = 0.1
     push!(algorithms, (
         name="ISTA",
@@ -59,7 +59,7 @@ function main()
             :printstep => 1,
         ),
     ))
-    
+
     push!(algorithms, (
         name="T2",
         updatefunc=extra_CondPredInertia,
@@ -76,15 +76,15 @@ function main()
     problem_to_algstats = OrderedDict()
     for (pb_id, pb_data) in enumerate(problems)
         printstyled("\n----- Solving problem $pb_id, $(pb_data.name)\n", color=:light_blue)
-        
+
         algo_to_stats = OrderedDict()
         for (algo_id, algo) in enumerate(algorithms)
             printstyled("\n---- Algorithm $algo_id, $(algo.name)\n", color=:light_blue)
-            
+
             xopt, hist = solve_proxgrad(pb_data.pb, pb_data.x0, algo.updatefunc; algo.params...)
             algo_to_stats[algo] = (hist=hist, xopt=xopt)
         end
-        
+
         problem_to_algstats[pb_data] = algo_to_stats
     end
 
@@ -98,22 +98,22 @@ function main()
 
     for (pb, algo_to_stats) in problem_to_algstats
         println("Generating graphs for ", pb.name)
-        
+
         ## Suboptimality plot
         build_save_suboptimality(pb, algo_to_stats, FIGS_FOLDER)
 
         ## Steplength plot
         # build_save_steplength(pb, algo_to_stats, FIGS_FOLDER)
-        
+
         if pb.pb.n == 2
             reg = typeof(pb.pb).parameters[1]
-            
+
             ## Iterates position
             ps = []
-            
+
             xmin, xmax = -1, 4
             ymin, ymax = -1, 2
-            
+
             ## Plot contour
             x = xmin:(xmax - xmin) / 100:xmax
             y = ymin:(ymax - ymin) / 100:ymax
@@ -133,7 +133,7 @@ function main()
             ## Plot manifolds
             coords = [(xmin, 0), (xmax, 0)]; add_manifold!(ps, coords)
             coords = [(0, ymin), (0, ymax)]; add_manifold!(ps, coords)
-                    
+
             fig = pgf_build_iteratesfig(ps, xmin, xmax, ymin, ymax)
 
             pgfsave(joinpath(FIGS_FOLDER, "$(pb.name)_iterates.pdf"), fig)
