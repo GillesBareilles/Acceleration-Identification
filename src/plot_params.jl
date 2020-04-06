@@ -114,9 +114,9 @@ function get_suboptimality_algoparams(algoname)
         # merge!(res, Dict(
         # ))
     elseif algoname == "MFISTA"
-        merge!(res, Dict(
-            "dashed" => nothing
-        ))
+        # merge!(res, Dict(
+        #     "dashed" => nothing
+        # ))
     end
 
     return res

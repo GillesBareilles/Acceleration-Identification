@@ -73,12 +73,12 @@ function solve_proxgrad(pb::AbstractProblem{T},
     linesearch && println("Step size:             ", "backtracking")
 
 
-    println("\nit       obj.                       step               struct x          struct y")
+    print("\nit       obj.                       step               struct x          struct y")
     while norm(x-x_old)>tol && it<itmax
         printtest = length(setdiff(get_support(T, y_old), get_support(T, y))) > 0
         if mod(it, printstep) == 0 || printtest
-            logstring = @sprintf "%6d   %.19e  %.5e" it F(pb, x) norm(x-x_old)
-            logstring2 = @sprintf "%16s  %16s\n" sprint(show, collect(get_support(T, x))) sprint(show, collect(get_support(T, y)))
+            logstring = @sprintf "\n%6d   %.19e  %.5e" it F(pb, x) norm(x-x_old)
+            logstring2 = @sprintf "%16s  %16s" sprint(show, collect(get_support(T, x))) sprint(show, collect(get_support(T, y)))
 
             col = printtest ? :red : :green
             printstyled(logstring*logstring2, color=col)
@@ -113,11 +113,17 @@ function solve_proxgrad(pb::AbstractProblem{T},
 
         ## history
         if mod(it-1, logstep) == 0
-            history[:iter_f][proxgrad_per_it*it] = F(pb, x)
-            saveiter && (history[:iter_x][proxgrad_per_it*it] = x)
+            ## relevant iterate
+            relevant_iterate = x
+            if haskey(memory, :evaluate_funcval)
+                relevant_iterate = memory[:z_old]
+                @printf "%16s" collect(get_support(T, relevant_iterate))
+            end
+            history[:iter_f][proxgrad_per_it*it] = F(pb, relevant_iterate)
+            saveiter && (history[:iter_x][proxgrad_per_it*it] = relevant_iterate)
             saveiter && (history[:iter_y][proxgrad_per_it*it] = y)
             history[:iter_step_length][proxgrad_per_it*it] = norm(x-x_old)
-            history[:iter_support_x][proxgrad_per_it*it] = get_support(T, x)
+            history[:iter_support_x][proxgrad_per_it*it] = get_support(T, relevant_iterate)
             history[:iter_support_y][proxgrad_per_it*it] = get_support(T, y)
         end
 
@@ -155,7 +161,7 @@ function solve_proxgrad(pb::AbstractProblem{T},
 
         it += 1
     end
-    @printf "%6d   %.19e  %.5e\n" it F(pb, x) norm(x-x_old)
+    @printf "\n%6d   %.19e  %.5e\n" it F(pb, x) norm(x-x_old)
 
     support = get_support(T, x)
 

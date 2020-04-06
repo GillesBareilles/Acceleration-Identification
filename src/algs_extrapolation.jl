@@ -102,6 +102,7 @@ end
 function extra_MFISTA(pb::AbstractProblem, y, y_old, it, mem)
     if it == 1
         mem[:z_old] = y
+        mem[:evaluate_funcval] = :z_old
     end
     z_old = copy(mem[:z_old])
 
