@@ -72,7 +72,7 @@ function runexpnums(problems, algorithms; FIGS_FOLDER = "./figs/expnums")
                     "no marks" => nothing,
                     # "line width" => "0.3pt",
                     # "color" => colors_vec[algo_id],
-                    get_traj_params(algo.name)...
+                    get_iterates_algoparams(algo.name)...
                 ),
                 Coordinates(coords_nbman_y_identified)
             ))
@@ -90,7 +90,7 @@ function runexpnums(problems, algorithms; FIGS_FOLDER = "./figs/expnums")
                         "forget plot" => nothing,
                         # "line width" => "0.3pt",
                         # "color" => colors_vec[algo_id],
-                        get_traj_params(algo.name)...
+                        get_iterates_algoparams(algo.name)...
                     ),
                     Coordinates(coords_nbman_y_identified)
                 ))
