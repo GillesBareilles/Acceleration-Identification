@@ -28,11 +28,11 @@ function runexpnums(problems, algorithms; FIGS_FOLDER = "./figs/expnums")
         algo_to_stats = OrderedDict()
         for (algo_id, algo) in enumerate(algorithms)
             printstyled("\n---- Algorithm $(algo.name)\n", color=:light_blue)
-            
+
             algo_to_stats[algo] = Dict()
             for (pb_id, pb_data) in enumerate(problem_class)
                 printstyled("\n----- Solving problem $pb_id, $(pb_data.name)\n", color=:light_blue)
-                
+
                 xopt, hist = solve_proxgrad(pb_data.pb, pb_data.xstart, algo.updatefunc; algo.params...)
                 algo_to_stats[algo][pb_data] = (hist=hist, xopt=xopt)
             end
@@ -50,7 +50,7 @@ function runexpnums(problems, algorithms; FIGS_FOLDER = "./figs/expnums")
         println("Generating graphs for class ", pbclass_name)
 
         ps = []
-        
+
         colors_vec = distinguishable_colors(8) # transform=deuteranopic
 
         algo_id = 1
@@ -60,7 +60,7 @@ function runexpnums(problems, algorithms; FIGS_FOLDER = "./figs/expnums")
             ############################################
             ## Plot one for legend
             (pb, pbinstance_stats) = first(stats); delete!(stats, pb)
-            
+
             reg = typeof(pb.pb).parameters[1]
             opt_supp = get_support(reg, pb.pb.x0)
 
@@ -72,7 +72,7 @@ function runexpnums(problems, algorithms; FIGS_FOLDER = "./figs/expnums")
                     "no marks" => nothing,
                     # "line width" => "0.3pt",
                     # "color" => colors_vec[algo_id],
-                    get_traj_params(algo.name)...
+                    get_iterates_algoparams(algo.name)...
                 ),
                 Coordinates(coords_nbman_y_identified)
             ))
@@ -90,17 +90,17 @@ function runexpnums(problems, algorithms; FIGS_FOLDER = "./figs/expnums")
                         "forget plot" => nothing,
                         # "line width" => "0.3pt",
                         # "color" => colors_vec[algo_id],
-                        get_traj_params(algo.name)...
+                        get_iterates_algoparams(algo.name)...
                     ),
                     Coordinates(coords_nbman_y_identified)
                 ))
-                
+
             end
             push!(ps, LegendEntry(get_legend(algo.name)))
 
             algo_id+=2
         end
-    
+
         fig = @pgf Axis(
             {
                 # height = "12cm",

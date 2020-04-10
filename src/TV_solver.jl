@@ -1,7 +1,7 @@
 """
 	TVdenoise!(output::Vector{Float64}, y::Vector{Float64}, λ::Float64)
 
-	Solve a Total Variation problem with noisy input signal `input` and 
+	Solve a Total Variation problem with noisy input signal `input` and
 	regularization tension `λ`.
 
 	Straight implementation of L. Condat's algorithm, from 	'A Direct Algorithm
@@ -11,13 +11,13 @@
 """
 function TVdenoise!(output::Vector{Float64}, y::Vector{Float64}, λ::Float64)
 	n = length(y)
-	
+
 	k = k0 = kmin = kplus = 1
 	vmin = y[1] - λ
 	vmax = y[1] + λ
 	umin = -λ
 	umax = λ
-	
+
 	while true
 		## 1.
 		if k == n

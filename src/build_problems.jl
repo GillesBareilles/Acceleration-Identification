@@ -2,8 +2,8 @@
 ## LASSO Problem
 ###############################################################################
 function get_randomlasso(n, m, sparsity; reg=regularizer_l1, seed=1234)
-    # A is drawn from the standard normal distribution 
-    # b = Ax0 + e where e is taken from the normal distribution with standard deviation 0.001. 
+    # A is drawn from the standard normal distribution
+    # b = Ax0 + e where e is taken from the normal distribution with standard deviation 0.001.
     # We set λ1 so that the original sparsity is ultimately recovered.
 
     Random.seed!(seed)
@@ -11,41 +11,41 @@ function get_randomlasso(n, m, sparsity; reg=regularizer_l1, seed=1234)
 
     Random.seed!(seed)
     x0 = rand(Normal(), n)
-    
-    if reg == regularizer_l1    
+
+    if reg == regularizer_l1
         Random.seed!(seed)
         inds_nz = Set(randperm(n)[1:sparsity])
 
-        for i in 1:n 
+        for i in 1:n
             !(i in inds_nz) && (x0[i] = 0)
         end
 
     elseif reg <: regularizer_l12
         T = reg.parameters[1]
         ngroups = Int(ceil(n/T))
-        
+
         Random.seed!(seed)
         inds_nz = Set(randperm(ngroups)[1:sparsity])
-        
+
         for i in 1:ngroups-1
             !(i in inds_nz) && (x0[T*i-3:T*i] .= 0)
         end
         !(ngroups in inds_nz) && (x0[T*ngroups-3:end] .= 0)
-        
+
     elseif reg == regularizer_lnuclear
         n_mat = Int(sqrt(n))
-        
+
         Random.seed!(seed)
         basisvecs = rand(Normal(), n_mat, sparsity)
 
         x0 = zeros(n)
-        for sp in 1:sparsity    
+        for sp in 1:sparsity
             x0 += vec(basisvecs[:, sp] * transpose(basisvecs[:, sp]))
         end
-    
+
     elseif reg <: regularizer_distball
         p = reg.parameters[1]
-        
+
         Random.seed!(seed)
         x0 = rand(Normal(), n); x0 /= norm(x0, p)
 
@@ -59,14 +59,14 @@ function get_randomlasso(n, m, sparsity; reg=regularizer_l1, seed=1234)
 
     y = A*x0+e
     pb = LassoPb{reg}(A, y, delta, n, x0)
-    
+
     return pb
 end
 
 function get_IM_testcase(; n=80, m=130, sparsity=0.1)
-    # A is drawn from the standard normal distribution 
-    # b = Ax0 + e where x0 is a 10% sparse vector taken from the normal distribution, 
-    # e is taken from the normal distribution with standard deviation 0.001. 
+    # A is drawn from the standard normal distribution
+    # b = Ax0 + e where x0 is a 10% sparse vector taken from the normal distribution,
+    # e is taken from the normal distribution with standard deviation 0.001.
     # We set λ1 so that the original sparsity is ultimately recovered.
 
     Random.seed!(23)
@@ -82,7 +82,7 @@ function get_IM_testcase(; n=80, m=130, sparsity=0.1)
     e = rand(Normal(0, 0.001), m)
 
     y = A*x0+e
-    
+
     return LassoPb{regularizer_l1}(A, y, 1., n, x0)
 end
 
@@ -94,7 +94,7 @@ function get_randomlassopb_TV(; n, p, λ=1, TVsparsity=0.05)
 	y_orig = zeros(n)
 	y = zeros(n)
 	y_orig[1] = 10
-	
+
 	## Ground truth vector
 	Random.seed!(23); sparsity = floor.(rand(n-1) .+ TVsparsity)
 	Random.seed!(23);
@@ -106,7 +106,7 @@ function get_randomlassopb_TV(; n, p, λ=1, TVsparsity=0.05)
 	## Noisy observation
 	Random.seed!(23); pert = rand(Normal(0, 1.0), n)
     y = y_orig .+ pert
-    
+
     y_obs = A * y
 
     return LassoPb{regularizer_TV}(A, y_obs, λ, n, y_orig)

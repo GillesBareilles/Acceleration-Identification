@@ -25,7 +25,7 @@ end
     reltol = get(mem, :id_reltol, 1e-3) * get(mem, :id_reltol_decay, 1)^(it-1)
     barrier = mem[:α] * pb.λ
     !haskey(mem, :cur_support) && (mem[:cur_support] = SortedSet{Int}())
-    
+
     ## Compute coordinates strictly within (γ∂g + I)(y)
     strong_support = get_support(T, mem[:u], tol=barrier * (1-reltol))
     support = get_support(T, mem[:u], tol=barrier)
@@ -75,7 +75,7 @@ function extra_CondPredInertia(pb::AbstractProblem{T}, y, y_old, it, mem) where 
 
     α = mem[:α]
     T_α_gradprox(pb, x) = prox_αg(pb, x - α * ∇f(pb, x), α)
-    
+
 
     pt_pg = T_α_gradprox(pb, x_next_pg)
     pt_accel = T_α_gradprox(pb, x_next_accel)
@@ -84,12 +84,12 @@ function extra_CondPredInertia(pb::AbstractProblem{T}, y, y_old, it, mem) where 
     support_accel    = get_support(T, pt_accel, tol=1e-11)
 
     # support_proxgrad !== support_accel && (@show collect(support_proxgrad), collect(support_accel))
-    
+
     nextpoint = x_next_accel
     if length(setdiff(support_proxgrad, support_accel)) > 0
         println("No acceleration this step.")
         nextpoint = x_next_pg
-        
+
         # if F(pb, pt_pg) > F(pb, pt_accel)
         #     @printf( "%16e  %16e     %16e\n", F(pb, pt_pg), F(pb, pt_accel), F(pb, pt_pg) - F(pb, pt_accel))
         # end
@@ -102,9 +102,11 @@ end
 function extra_MFISTA(pb::AbstractProblem, y, y_old, it, mem)
     if it == 1
         mem[:z_old] = y
+        mem[:evaluate_funcval] = :z_old
     end
     z_old = copy(mem[:z_old])
 
+    z = zeros(size(y))
     if argmin([F(pb, y), F(pb, z_old)]) == 1
         z = y
     else

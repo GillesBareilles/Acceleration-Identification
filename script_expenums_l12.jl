@@ -6,8 +6,8 @@ function get_problems()
 
     problems = Dict()
 
-    nseeds = 5  
-    
+    nseeds = 5
+
     ## Lasso l12
     l12_pbs = []
 
@@ -20,7 +20,7 @@ function get_problems()
 
         push!(l12_pbs, (name = "pblasso_l12", pb = pb, xstart = xstart))
     end
-    
+
     problems["l12_randinit"] = l12_pbs
 
     ## Lasso l12 zero init
@@ -37,7 +37,7 @@ end
 
 function get_algorithms()
     algorithms = []
-    
+
     # αuser = 0.001
     itmax = 4e4
     printstep = 1e3
@@ -62,7 +62,7 @@ function get_algorithms()
             :saveiter => false,
         ),
     ))
-        
+
     push!(algorithms, (
         name="T1",
         updatefunc=extra_CondInertia,
@@ -74,7 +74,7 @@ function get_algorithms()
             :saveiter => false,
         ),
     ))
-    
+
     push!(algorithms, (
         name="T2",
         updatefunc=extra_CondPredInertia,

@@ -162,7 +162,7 @@ g(pb::AbstractProblem{regularizer_distball{p}}, x) where p = pb.λ* max(norm(x, 
 
 function prox_αg(pb::AbstractProblem{regularizer_distball{p}}, x, α) where p
     xnorm = norm(x, p)
-    if xnorm <= 1 
+    if xnorm <= 1
         res = copy(x)
     elseif xnorm > 1+α*pb.λ
         res = x .* (1 - α*pb.λ / xnorm)
